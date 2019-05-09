@@ -17,6 +17,19 @@ app.get('/users',async(req,res)=>{
     }
 });
 
+app.post('/users/:id/update',async(req,res)=>{
+    const _id = req.params.id;
+    try{
+        let update = await User.findByIdAndUpdate({_id},{
+            $set: req.body,
+        });
+        update = await User.findById({_id});
+        res.status(200).send(update);
+    } catch(e){
+        res.status(500).send(e);
+    }
+})
+
 app.get('/users/:id',async(req,res)=>{
     const _id = req.params.id;
     try{
