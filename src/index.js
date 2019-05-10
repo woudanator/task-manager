@@ -41,6 +41,7 @@ app.post('/users',async(req,res)=>{
         res.status(400).send(e);
     }
 });
+
 //Update Users
 app.patch('/users/:id',async(req,res)=>{
     //Update Validation
@@ -65,6 +66,20 @@ app.patch('/users/:id',async(req,res)=>{
     } catch (e){
         console.log("400 Error caught")
         res.status(400).send(e);
+    }
+})
+
+// Delete User
+app.delete('/users/:id',async(req,res)=>{
+    const id = req.params.id;
+    try{
+        const user = await User.findByIdAndDelete(id);
+        if(!user){
+           return res.status(404).send({error: 'User Not Found'});
+        }
+        res.status(200).send({success: "User was Deleted"})
+    }catch(e){
+        res.status(500).send(e);
     }
 })
 
@@ -121,6 +136,19 @@ app.patch('/tasks/:id',async(req,res)=>{
         res.status(400).send();
     }
 
+})
+
+app.delete('/tasks/:id',async(req,res)=>{
+    const id = req.params.id;
+    try{
+        const task = await Task.findByIdAndDelete(id);
+        if(!task){
+          return res.status(404).send({failed: "Can't Find Task"}); 
+        }
+        res.status(200).send({success: "Task has been Deleted"});
+    } catch(e){
+        res.status(500).send(e);
+    }
 })
 
 app.listen(port,()=>{
