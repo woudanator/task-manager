@@ -43,22 +43,24 @@ router.patch('/users/:id',async(req,res)=>{
     const allowedUpdates = ['name','email','age','password'];
     const isValid = updates.every((update)=> allowedUpdates.includes(update));
 
-    // User ID's 
-    const id = req.params.id;
+    // User ID's
 
     if(!isValid){
-        console.log(isValid);
         return res.status(400).send({ error: "Invalid Updates"});
     }
 
     try{
-        const user = await User.findByIdAndUpdate(id,req.body,{new:true,runValidators:true});
+        const user = await User.findById(req.params.id);
+        
+        
+        updates.forEach((update) => user[update] = req.body[update])
+        await user.save();
+
         if(!user){
           return res.status(404).send();
         }
         res.status(200).send(user);
     } catch (e){
-        console.log("400 Error caught")
         res.status(400).send(e);
     }
 })
