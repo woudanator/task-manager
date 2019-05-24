@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-DBurl = 'mongodb+srv://reyn:R@Private1001@nodecourse-drhwz.mongodb.net/task-manager-api';
+DBurl = 'mongodb://127.0.0.1:27017/task-manager-api';
 
 mongoose.connect(DBurl,{
     useNewUrlParser: true,
