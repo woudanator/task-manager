@@ -48,6 +48,14 @@ const userSchema = new mongoose.Schema({
         }
     }]
 })
+
+userSchema.virtual('tasks',{
+    ref: 'Tasks',
+    localField: '_id',
+    foreignField: 'owner',  
+})
+
+
 // Hash passwords
 userSchema.pre('save',async function(next){
     const user = this 
@@ -64,6 +72,19 @@ userSchema.methods.generateAuthToken = async function() {
     user.tokens = user.tokens.concat({ token })
     await user.save();
     return token;
+}
+
+
+//Public Profile
+userSchema.methods.toJSON = function(){
+    const user = this;
+    const userObject = user.toObject()
+    
+    //Delete sensitive data 
+    delete userObject.password;
+    delete userObject.tokens;
+    
+    return userObject;
 }
 
 // Find Users Credentials
