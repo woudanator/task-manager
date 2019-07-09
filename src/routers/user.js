@@ -2,6 +2,20 @@ const express = require('express');
 const router = new express.Router();
 const User = require('../models/user');
 const auth = require('../middleware/auth');
+const multer = require('multer');
+
+const upload = multer({
+    dest: 'avatars',
+    limits: {
+        fileSize: 1000000
+    },
+    fileFilter(req,file,cb) {
+        if(!file.originalname.match(/\.(jpg|jpeng|png)$/)) {
+            return cb(new Error('File is in wrong Format'))
+        }
+       cb(undefined,true);
+    }
+})
 
 
 // Get all Users
@@ -12,6 +26,11 @@ router.get('/users/me', auth ,async(req,res)=>{
         res.status(500).send(e);
     }
 });
+
+// Upload Avatar
+router.post('/users/me/avatar',upload.single('avatar'),(req,res)=>{
+    res.send({success:'your profile picture has been updated'});
+})
 
 // Create new User
 router.post('/users',async(req,res)=>{
